@@ -1,0 +1,37 @@
+<div class="tls-container" 
+     [style.--tls-cell-size.px]="cellSize"
+     (mouseleave)="onContainerLeave()">
+  
+  <!-- Grid -->
+  <div class="tls-grid">
+    @for (row of rowsArray(); track row) {
+      <div class="tls-row" [attr.data-row]="row">
+        @for (col of colsArray(); track col) {
+          <lib-table-cell
+            [row]="row"
+            [col]="col"
+            [active]="isCellActive(row, col)"
+            [hovered]="hoveredCell()?.row === row && hoveredCell()?.col === col"
+            (cellHover)="onCellHover(row, col)"
+            (cellClick)="onCellClick(row, col)"
+            [attr.aria-label]="getCellAriaLabel(row, col)"
+            [attr.aria-selected]="isCellActive(row, col)">
+          </lib-table-cell>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  @if (showFooter) {
+    <lib-table-footer
+      [selectionText]="selectionText()"
+      [visible]="hasHoveredCell()">
+    </lib-table-footer>
+  }
+
+  <!-- Screen reader announcements -->
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+    {{ screenReaderText() }}
+  </div>
+</div>

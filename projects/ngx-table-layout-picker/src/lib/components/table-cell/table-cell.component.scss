@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus {
+    outline: 2px solid var(--tls-focus-color, #1976d2);
+    outline-offset: -2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+.tls-cell {
+  width: var(--tls-cell-size, 24px);
+  height: var(--tls-cell-size, 24px);
+  border: var(--tls-border-width, 2px) solid var(--tls-border, #e0e0e0);
+  background-color: var(--tls-background, #fff);
+  transition: all 0.1s ease;
+  box-sizing: border-box;
+}
+
+:host(.hovered) .tls-cell {
+  border-color: var(--tls-border-hover, #1976d2);
+}
+
+:host(.active) .tls-cell {
+  background-color: var(--tls-cell-active, #1565c0);
+  border-color: var(--tls-cell-active, #1565c0);
+}
+
+// Touch device optimization
+@media (hover: none) {
+  .tls-cell {
+    // Larger touch targets on mobile
+    min-width: 32px;
+    min-height: 32px;
+  }
+}

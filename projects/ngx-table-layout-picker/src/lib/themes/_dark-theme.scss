@@ -1,0 +1,30 @@
+/**
+ * Dark theme for ngx-table-layout-picker
+ */
+
+$dark-theme: (
+  background: #1e1e1e,
+  text: #f5f5f5,
+  border: #424242,
+  borderHover: #42a5f5,
+  cellActive: #64b5f6,
+  focus: #42a5f5
+);
+
+@import 'theme-base';
+
+/**
+ * Apply dark theme to all picker components
+ */
+.ngx-table-layout-picker-dark-theme {
+  @include ngx-table-layout-picker-theme($dark-theme);
+}
+
+/**
+ * Auto-apply dark theme based on system preference
+ */
+@media (prefers-color-scheme: dark) {
+  .ngx-table-layout-picker-auto-theme {
+    @include ngx-table-layout-picker-theme($dark-theme);
+  }
+}

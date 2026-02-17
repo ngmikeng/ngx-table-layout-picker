@@ -1,0 +1,30 @@
+/**
+ * Light theme for ngx-table-layout-picker
+ */
+
+$light-theme: (
+  background: #ffffff,
+  text: #212121,
+  border: #e0e0e0,
+  borderHover: #1976d2,
+  cellActive: #1565c0,
+  focus: #1976d2
+);
+
+@import 'theme-base';
+
+/**
+ * Apply light theme to all picker components
+ */
+.ngx-table-layout-picker-light-theme {
+  @include ngx-table-layout-picker-theme($light-theme);
+}
+
+/**
+ * Auto-apply light theme based on system preference
+ */
+@media (prefers-color-scheme: light) {
+  .ngx-table-layout-picker-auto-theme {
+    @include ngx-table-layout-picker-theme($light-theme);
+  }
+}

@@ -1,0 +1,35 @@
+/**
+ * Base theme mixin for ngx-table-layout-picker
+ * Apply this mixin with your theme configuration
+ */
+
+@mixin ngx-table-layout-picker-theme($theme) {
+  ngx-table-layout-picker {
+    --tls-background: #{map-get($theme, 'background')};
+    --tls-text: #{map-get($theme, 'text')};
+    --tls-border: #{map-get($theme, 'border')};
+    --tls-border-hover: #{map-get($theme, 'borderHover')};
+    --tls-cell-active: #{map-get($theme, 'cellActive')};
+    --tls-focus-color: #{map-get($theme, 'focus')};
+  }
+}
+
+/**
+ * Material Design color palette integration helper
+ */
+@mixin ngx-table-layout-picker-material-theme($primary, $accent, $is-dark: false) {
+  $background: if($is-dark, #1e1e1e, #ffffff);
+  $text: if($is-dark, #f5f5f5, #212121);
+  $border: if($is-dark, #424242, #e0e0e0);
+  
+  $theme: (
+    background: $background,
+    text: $text,
+    border: $border,
+    borderHover: $primary,
+    cellActive: $primary,
+    focus: $primary
+  );
+  
+  @include ngx-table-layout-picker-theme($theme);
+}

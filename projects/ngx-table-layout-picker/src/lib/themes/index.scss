@@ -1,0 +1,41 @@
+/**
+ * Main theme file for ngx-table-layout-picker
+ * Import this file in your global styles to use the picker with theming support
+ */
+
+@import 'theme-base';
+@import 'light-theme';
+@import 'dark-theme';
+
+/**
+ * Default theme (light)
+ */
+ngx-table-layout-picker {
+  @include ngx-table-layout-picker-theme($light-theme);
+}
+
+/**
+ * Apply theme based on data-theme attribute
+ */
+ngx-table-layout-picker[data-theme='light'] {
+  @include ngx-table-layout-picker-theme($light-theme);
+}
+
+ngx-table-layout-picker[data-theme='dark'] {
+  @include ngx-table-layout-picker-theme($dark-theme);
+}
+
+/**
+ * Auto theme detection
+ */
+@media (prefers-color-scheme: light) {
+  ngx-table-layout-picker[data-theme='auto'] {
+    @include ngx-table-layout-picker-theme($light-theme);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  ngx-table-layout-picker[data-theme='auto'] {
+    @include ngx-table-layout-picker-theme($dark-theme);
+  }
+}

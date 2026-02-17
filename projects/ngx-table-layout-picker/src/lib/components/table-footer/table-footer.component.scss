@@ -1,0 +1,23 @@
+.tls-footer {
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tls-text, #212121);
+  border-top: 1px solid var(--tls-border, #e0e0e0);
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  span {
+    font-family: var(--tls-font-family, inherit);
+  }
+}

@@ -1,0 +1,39 @@
+<button
+  [attr.mat-raised-button]="buttonAppearance === 'raised' ? '' : null"
+  [attr.mat-stroked-button]="buttonAppearance === 'stroked' ? '' : null"
+  [attr.mat-flat-button]="buttonAppearance === 'flat' ? '' : null"
+  [attr.mat-button]="buttonAppearance === 'basic' ? '' : null"
+  [matMenuTriggerFor]="menu"
+  [disabled]="disabled"
+  (menuOpened)="onMenuOpened()"
+  (menuClosed)="onMenuClosed()"
+  [attr.aria-label]="'Open ' + buttonLabel"
+  class="tls-dropdown-button">
+  @if (buttonIcon) {
+    <mat-icon>{{ buttonIcon }}</mat-icon>
+  }
+  <span>{{ buttonLabel }}</span>
+</button>
+
+<mat-menu
+  #menu="matMenu"
+  [class]="menuClass"
+  [yPosition]="menuPosition === 'above' ? 'above' : 'below'"
+  [xPosition]="'before'">
+  <div (click)="$event.stopPropagation()" class="tls-dropdown-content">
+    <ngx-table-layout-picker
+      [rows]="selectorConfig.rows ?? 10"
+      [cols]="selectorConfig.cols ?? 10"
+      [maxRows]="selectorConfig.maxRows ?? 20"
+      [maxCols]="selectorConfig.maxCols ?? 20"
+      [showFooter]="selectorConfig.showFooter ?? true"
+      [theme]="selectorConfig.theme ?? 'auto'"
+      [cellSize]="selectorConfig.cellSize ?? 24"
+      [expandable]="selectorConfig.expandable ?? true"
+      [responsive]="selectorConfig.responsive ?? true"
+      [minCellSize]="selectorConfig.minCellSize ?? 20"
+      [ariaLabel]="selectorConfig.ariaLabel ?? 'Table layout selector'"
+      (selectionChange)="onSelectionChange($event)">
+    </ngx-table-layout-picker>
+  </div>
+</mat-menu>

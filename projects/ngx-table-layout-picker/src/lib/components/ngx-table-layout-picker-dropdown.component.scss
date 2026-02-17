@@ -1,0 +1,26 @@
+.tls-dropdown-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    margin: 0;
+  }
+}
+
+.tls-dropdown-content {
+  // Prevent menu closing when clicking inside
+  user-select: none;
+}
+
+// Custom menu styling
+::ng-deep .tls-dropdown-menu {
+  .mat-mdc-menu-content {
+    padding: 0;
+  }
+
+  .mat-mdc-menu-panel {
+    min-width: auto;
+    max-width: none;
+  }
+}
