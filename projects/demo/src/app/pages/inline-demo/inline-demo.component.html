@@ -1,0 +1,97 @@
+<div class="demo-page">
+  <div class="page-header">
+    <h1>
+      <mat-icon>table_view</mat-icon>
+      Inline Mode
+    </h1>
+    <p>Direct component usage for seamless integration into your application</p>
+  </div>
+
+  <mat-card class="demo-card">
+    <mat-card-header>
+      <mat-card-title>Basic Usage</mat-card-title>
+      <mat-card-subtitle>Click on a cell to select table dimensions</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="picker-container">
+        <ngx-table-layout-picker
+          [rows]="8"
+          [cols]="8"
+          [showFooter]="true"
+          (selectionChange)="onSelection($event)">
+        </ngx-table-layout-picker>
+      </div>
+
+      @if (selection()) {
+        <div class="selection-result">
+          <strong>Selected:</strong> 
+          {{ selection()!.rows }} × {{ selection()!.cols }} table
+          ({{ selection()!.rows * selection()!.cols }} cells)
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="code-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>code</mat-icon>
+        Code Example
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>Component</h3>
+      <pre><code>import &#123; Component, signal &#125; from '@angular/core';
+import &#123; NgxTableLayoutPickerComponent, TableSelection &#125; from 'ngx-table-layout-picker';
+
+&#64;Component(&#123;
+  selector: 'app-example',
+  imports: [NgxTableLayoutPickerComponent],
+  template: `
+    &lt;ngx-table-layout-picker
+      [rows]="8"
+      [cols]="8"
+      [showFooter]="true"
+      (selectionChange)="onSelection($event)"&gt;
+    &lt;/ngx-table-layout-picker&gt;
+  `
+&#125;)
+export class ExampleComponent &#123;
+  protected readonly selection = signal&lt;TableSelection | null&gt;(null);
+
+  protected onSelection(selection: TableSelection): void &#123;
+    this.selection.set(selection);
+    console.log('Selected:', selection);
+  &#125;
+&#125;</code></pre>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-card-title>Configuration Options</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ul class="options-list">
+        <li>
+          <strong>rows</strong> (number): Number of rows in the grid (default: 10)
+        </li>
+        <li>
+          <strong>cols</strong> (number): Number of columns in the grid (default: 10)
+        </li>
+        <li>
+          <strong>theme</strong> ('light' | 'dark' | 'auto'): Color theme (default: 'auto')
+        </li>
+        <li>
+          <strong>showFooter</strong> (boolean): Display selection text below grid (default: true)
+        </li>
+        <li>
+          <strong>responsive</strong> (boolean): Enable adaptive grid sizing (default: false)
+        </li>
+        <li>
+          <strong>selectionChange</strong> (event): Emits TableSelection when user selects dimensions
+        </li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+</div>

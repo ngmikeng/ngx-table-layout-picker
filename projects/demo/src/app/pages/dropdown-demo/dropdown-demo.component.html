@@ -1,0 +1,128 @@
+<div class="demo-page">
+  <div class="page-header">
+    <h1>
+      <mat-icon>arrow_drop_down_circle</mat-icon>
+      Dropdown Mode
+    </h1>
+    <p>Material Menu integration with customizable button styles</p>
+  </div>
+
+  <mat-card class="demo-card">
+    <mat-card-header>
+      <mat-card-title>Basic Dropdown</mat-card-title>
+      <mat-card-subtitle>Open the dropdown menu to select table dimensions</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="button-container">
+        <ngx-table-layout-picker-dropdown
+          buttonLabel="Insert Table"
+          buttonIcon="table_chart"
+          buttonAppearance="raised"
+          [selectorConfig]="{
+            rows: 10,
+            cols: 10,
+            showFooter: true
+          }"
+          (tableSelected)="onSelection($event)">
+        </ngx-table-layout-picker-dropdown>
+      </div>
+
+      @if (selection()) {
+        <div class="selection-result">
+          <strong>Selected:</strong> 
+          {{ selection()!.rows }} × {{ selection()!.cols }} table
+          ({{ selection()!.rows * selection()!.cols }} cells)
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="code-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>code</mat-icon>
+        Code Example
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>Component</h3>
+      <pre><code>import &#123; Component, signal &#125; from '@angular/core';
+import &#123; NgxTableLayoutPickerDropdownComponent, TableSelection &#125; from 'ngx-table-layout-picker';
+
+&#64;Component(&#123;
+  selector: 'app-example',
+  imports: [NgxTableLayoutPickerDropdownComponent],
+  template: `
+    &lt;ngx-table-layout-picker-dropdown
+      buttonLabel="Insert Table"
+      buttonIcon="table_chart"
+      buttonAppearance="raised"
+      [selectorConfig]="&#123;
+        rows: 10,
+        cols: 10,
+        theme: 'auto',
+        showFooter: true
+      &#125;"
+      (tableSelected)="onSelection($event)"&gt;
+    &lt;/ngx-table-layout-picker-dropdown&gt;
+  `
+&#125;)
+export class ExampleComponent &#123;
+  protected readonly selection = signal&lt;TableSelection | null&gt;(null);
+
+  protected onSelection(selection: TableSelection): void &#123;
+    this.selection.set(selection);
+    console.log('Selected:', selection);
+  &#125;
+&#125;</code></pre>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-card-title>Configuration Options</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>Dropdown Component</h3>
+      <ul class="options-list">
+        <li>
+          <strong>buttonLabel</strong> (string): Text displayed on the button (default: 'Select Table')
+        </li>
+        <li>
+          <strong>buttonIcon</strong> (string): Material icon name for the button (optional)
+        </li>
+        <li>
+          <strong>buttonAppearance</strong> ('basic' | 'raised' | 'stroked' | 'flat'): Button style (default: 'basic')
+        </li>
+        <li>
+          <strong>buttonColor</strong> ('primary' | 'accent' | 'warn'): Button color (optional)
+        </li>
+        <li>
+          <strong>selectorConfig</strong> (TableLayoutConfig): Configuration for the picker component
+        </li>
+        <li>
+          <strong>tableSelected</strong> (event): Emits TableSelection when user selects dimensions
+        </li>
+      </ul>
+
+      <h3>Selector Config</h3>
+      <ul class="options-list">
+        <li>
+          <strong>rows</strong> (number): Number of rows in the grid (default: 10)
+        </li>
+        <li>
+          <strong>cols</strong> (number): Number of columns in the grid (default: 10)
+        </li>
+        <li>
+          <strong>theme</strong> ('light' | 'dark' | 'auto'): Color theme (default: 'auto')
+        </li>
+        <li>
+          <strong>showFooter</strong> (boolean): Display selection text (default: true)
+        </li>
+        <li>
+          <strong>responsive</strong> (boolean): Enable adaptive grid sizing (default: false)
+        </li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+</div>

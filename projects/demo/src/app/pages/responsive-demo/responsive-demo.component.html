@@ -1,0 +1,195 @@
+<div class="demo-page">
+  <div class="page-header">
+    <h1>
+      <mat-icon>devices</mat-icon>
+      Responsive Mode
+    </h1>
+    <p>Adaptive grid sizing that responds to device type and screen size</p>
+  </div>
+
+  <!-- Device Info -->
+  <mat-card class="info-banner">
+    <mat-card-content>
+      <div class="device-info">
+        <div class="info-item">
+          <mat-icon>smartphone</mat-icon>
+          <div>
+            <strong>Current Breakpoint</strong>
+            <span>{{ currentBreakpoint() }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <mat-icon>touch_app</mat-icon>
+          <div>
+            <strong>Touch Device</strong>
+            <span>{{ isTouchDevice() ? 'Yes' : 'No' }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <mat-icon>grid_on</mat-icon>
+          <div>
+            <strong>Recommended Grid</strong>
+            <span>{{ recommendedGridSize() }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="demo-card">
+    <mat-card-header>
+      <mat-card-title>Responsive Grid</mat-card-title>
+      <mat-card-subtitle>The grid adapts automatically to your device and screen size</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="picker-container">
+        <ngx-table-layout-picker
+          [rows]="10"
+          [cols]="10"
+          [responsive]="true"
+          [showFooter]="true"
+          (selectionChange)="onSelection($event)">
+        </ngx-table-layout-picker>
+      </div>
+
+      @if (selection()) {
+        <div class="selection-result">
+          <strong>Selected:</strong> 
+          {{ selection()!.rows }} × {{ selection()!.cols }} table
+          ({{ selection()!.rows * selection()!.cols }} cells)
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="features-card">
+    <mat-card-header>
+      <mat-card-title>Responsive Features</mat-card-title>
+      <mat-card-subtitle>What makes it adaptive</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <ul class="features-list">
+        <li>
+          <mat-icon>phone_android</mat-icon>
+          <div>
+            <strong>Mobile Optimized</strong>
+            <p>Smaller grid (6×6) with larger cells (32px) for easy touch interaction</p>
+          </div>
+        </li>
+        <li>
+          <mat-icon>tablet_mac</mat-icon>
+          <div>
+            <strong>Tablet Support</strong>
+            <p>Medium grid (8×8) with comfortable cell size (28px) for balanced experience</p>
+          </div>
+        </li>
+        <li>
+          <mat-icon>desktop_windows</mat-icon>
+          <div>
+            <strong>Desktop Enhanced</strong>
+            <p>Larger grid (10×10) with precise cells (24px) for detailed selection</p>
+          </div>
+        </li>
+        <li>
+          <mat-icon>touch_app</mat-icon>
+          <div>
+            <strong>Touch Handling</strong>
+            <p>Enhanced touch targets (44px minimum) with haptic feedback on supported devices</p>
+          </div>
+        </li>
+        <li>
+          <mat-icon>phone_iphone</mat-icon>
+          <div>
+            <strong>iOS Safe Areas</strong>
+            <p>Respects safe area insets on iOS devices with notches</p>
+          </div>
+        </li>
+        <li>
+          <mat-icon>screen_rotation</mat-icon>
+          <div>
+            <strong>Orientation Aware</strong>
+            <p>Adjusts layout when device orientation changes</p>
+          </div>
+        </li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="code-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>code</mat-icon>
+        Code Example
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>Enable Responsive Mode</h3>
+      <pre><code>&lt;ngx-table-layout-picker
+  [rows]="10"
+  [cols]="10"
+  [responsive]="true"
+  [showFooter]="true"
+  (selectionChange)="onSelection($event)"&gt;
+&lt;/ngx-table-layout-picker&gt;</code></pre>
+
+      <h3>Using ResponsiveService</h3>
+      <pre><code>import &#123; Component, inject, computed &#125; from '@angular/core';
+import &#123; ResponsiveService &#125; from 'ngx-table-layout-picker';
+
+&#64;Component(&#123;...&#125;)
+export class MyComponent &#123;
+  protected readonly responsiveService = inject(ResponsiveService);
+
+  protected readonly currentBreakpoint = computed(() => 
+    this.responsiveService.currentBreakpoint()
+  );
+
+  protected readonly recommendedSize = computed(() => 
+    this.responsiveService.getRecommendedGridSize()
+  );
+&#125;</code></pre>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="breakpoints-card">
+    <mat-card-header>
+      <mat-card-title>Breakpoint Reference</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table>
+        <thead>
+          <tr>
+            <th>Breakpoint</th>
+            <th>Screen Width</th>
+            <th>Grid Size</th>
+            <th>Cell Size</th>
+            <th>Gap Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mobile</strong></td>
+            <td>≤ 576px</td>
+            <td>6×6</td>
+            <td>32px</td>
+            <td>4px</td>
+          </tr>
+          <tr>
+            <td><strong>Tablet</strong></td>
+            <td>577px - 1024px</td>
+            <td>8×8</td>
+            <td>28px</td>
+            <td>3px</td>
+          </tr>
+          <tr>
+            <td><strong>Desktop</strong></td>
+            <td>≥ 1025px</td>
+            <td>10×10</td>
+            <td>24px</td>
+            <td>2px</td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

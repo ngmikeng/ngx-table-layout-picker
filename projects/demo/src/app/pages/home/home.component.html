@@ -1,0 +1,72 @@
+<div class="home-page">
+  <div class="hero">
+    <h1>NGX Table Layout Picker</h1>
+    <p class="subtitle">An Angular library for selecting table dimensions with an intuitive grid interface</p>
+    <p class="version">Version 2.0 • Angular 17+</p>
+  </div>
+
+  <!-- Feature Cards -->
+  <div class="features-grid">
+    @for (feature of features; track feature.route) {
+      <mat-card class="feature-card" [routerLink]="feature.route">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>{{ feature.icon }}</mat-icon>
+          <mat-card-title>{{ feature.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ feature.description }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary">
+            View Demo
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+
+  <!-- Key Features Section -->
+  <mat-card class="key-features-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>star</mat-icon>
+      <mat-card-title>Key Features</mat-card-title>
+      <mat-card-subtitle>Everything you need for table layout selection</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <ul class="features-list">
+        @for (feature of keyFeatures; track $index) {
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ feature }}</span>
+          </li>
+        }
+      </ul>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Getting Started -->
+  <mat-card class="getting-started-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>rocket_launch</mat-icon>
+      <mat-card-title>Getting Started</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>Installation</h3>
+      <pre><code>npm install ngx-table-layout-picker</code></pre>
+
+      <h3>Basic Usage</h3>
+      <pre><code>&lt;ngx-table-layout-picker
+  [rows]="10"
+  [cols]="10"
+  [theme]="'light'"
+  (selectionChange)="onSelect($event)"&gt;
+&lt;/ngx-table-layout-picker&gt;</code></pre>
+
+      <button mat-raised-button color="primary" routerLink="/docs">
+        <mat-icon>book</mat-icon>
+        View Full Documentation
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

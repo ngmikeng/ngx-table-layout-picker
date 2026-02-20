@@ -1,150 +1,61 @@
 <div class="demo-app" [class.dark-mode]="darkMode()">
   <!-- Toolbar -->
   <mat-toolbar color="primary" class="demo-toolbar">
-    <span>{{ title }}</span>
+    <button 
+      mat-icon-button 
+      (click)="toggleSidenav()"
+      matTooltip="Toggle navigation"
+      aria-label="Toggle navigation">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="title">{{ title }}</span>
     <span class="spacer"></span>
+    
     <mat-slide-toggle
       [checked]="darkMode()"
       (change)="toggleDarkMode()"
+      matTooltip="Toggle dark mode"
       aria-label="Toggle dark mode">
-      Dark Mode
+      @if (!isMobile()) {
+        <span class="toggle-label">Dark Mode</span>
+      }
     </mat-slide-toggle>
   </mat-toolbar>
 
-  <!-- Main Content -->
-  <div class="demo-content">
-    <div class="demo-header">
-      <h1>NGX Table Layout Picker</h1>
-      <p>An Angular library for selecting table dimensions with an intuitive grid interface</p>
-    </div>
-
-    <!-- Three Card Layout -->
-    <div class="demo-grid">
+  <!-- Sidenav Container -->
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav 
+      #sidenav
+      [opened]="sidenavOpened()"
+      [mode]="isMobile() ? 'over' : 'side'"
+      class="sidenav">
       
-      <!-- Inline Mode Demo -->
-      <mat-card class="demo-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>table_view</mat-icon>
-          <mat-card-title>Inline Mode</mat-card-title>
-          <mat-card-subtitle>Direct component usage</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Click on a cell to select table dimensions:</p>
-          
-          <div class="picker-container">
-            <ngx-table-layout-picker
-              [rows]="8"
-              [cols]="8"
-              [theme]="darkMode() ? 'dark' : 'light'"
-              [showFooter]="true"
-              (selectionChange)="onInlineSelection($event)">
-            </ngx-table-layout-picker>
-          </div>
+      <div class="sidenav-header">
+        <mat-icon>view_module</mat-icon>
+        <h2>Navigation</h2>
+      </div>
 
-          @if (inlineSelection()) {
-            <div class="selection-result">
-              <strong>Selected:</strong> 
-              {{ inlineSelection()!.rows }} × {{ inlineSelection()!.cols }} table
-            </div>
-          }
-        </mat-card-content>
-      </mat-card>
+      <mat-nav-list>
+        @for (item of navItems; track item.route) {
+          <a 
+            mat-list-item 
+            [routerLink]="item.route"
+            [activated]="isActiveRoute(item.route)"
+            (click)="onNavItemClick()">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.label }}</span>
+          </a>
+        }
+      </mat-nav-list>
 
-      <!-- Dropdown Mode Demo -->
-      <mat-card class="demo-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>arrow_drop_down_circle</mat-icon>
-          <mat-card-title>Dropdown Mode</mat-card-title>
-          <mat-card-subtitle>Material Menu integration</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Open the dropdown menu to select table dimensions:</p>
-          
-          <div class="button-container">
-            <ngx-table-layout-picker-dropdown
-              buttonLabel="Insert Table"
-              buttonIcon="table_chart"
-              buttonAppearance="raised"
-              [selectorConfig]="{
-                rows: 10,
-                cols: 10,
-                theme: darkMode() ? 'dark' : 'light'
-              }"
-              (tableSelected)="onDropdownSelection($event)">
-            </ngx-table-layout-picker-dropdown>
-          </div>
+      <div class="sidenav-footer">
+        <p>Version 2.0</p>
+        <p>Angular 17+</p>
+      </div>
+    </mat-sidenav>
 
-          @if (dropdownSelection()) {
-            <div class="selection-result">
-              <strong>Selected:</strong> 
-              {{ dropdownSelection()!.rows }} × {{ dropdownSelection()!.cols }} table
-            </div>
-          }
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Features Card -->
-      <mat-card class="demo-card features-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>star</mat-icon>
-          <mat-card-title>Key Features</mat-card-title>
-          <mat-card-subtitle>What's included</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <ul class="features-list">
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Standalone components (Angular 17+)</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Signal-based state management</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Light & dark theme support</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Responsive design</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Full keyboard navigation</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>ARIA accessibility</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Angular Material integration</span>
-            </li>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              <span>Customizable styling</span>
-            </li>
-          </ul>
-        </mat-card-content>
-      </mat-card>
-
-    </div>
-
-    <!-- Last Selection Display -->
-    @if (lastSelection()) {
-      <mat-card class="last-selection-card">
-        <mat-card-content>
-          <div class="last-selection-content">
-            <mat-icon>analytics</mat-icon>
-            <div>
-              <strong>Last Selection:</strong> 
-              {{ lastSelection()!.rows }} rows × {{ lastSelection()!.cols }} columns 
-              ({{ lastSelection()!.rows * lastSelection()!.cols }} cells)
-            </div>
-            <small>{{ lastSelection()!.timestamp | date:'medium' }}</small>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    }
-  </div>
+    <mat-sidenav-content class="main-content">
+      <router-outlet />
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
