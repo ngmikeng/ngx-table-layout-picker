@@ -98,9 +98,10 @@ The main table layout picker component.
 | `showFooter` | `boolean` | `true` | Show footer with selection info |
 | `theme` | `ThemeMode` | `'auto'` | Theme: 'light', 'dark', or 'auto' |
 | `cellSize` | `number` | `24` | Size of each cell in pixels (20-40) |
-| `expandable` | `boolean` | `true` | Enable dynamic grid expansion |
+| `expandable` | `boolean` | `true` | Enable dynamic grid expansion/shrinking |
 | `responsive` | `boolean` | `true` | Enable responsive behavior |
 | `minCellSize` | `number` | `20` | Minimum cell size for responsive scaling |
+| `shrinkThreshold` | `number` | `2` | Number of cells away from edge before shrinking |
 | `ariaLabel` | `string` | `'Table layout selector'` | ARIA label for accessibility |
 
 #### Outputs
@@ -110,6 +111,8 @@ The main table layout picker component.
 | `selectionChange` | `EventEmitter<TableSelection>` | Emitted when user selects a layout |
 | `cellHover` | `EventEmitter<TableCell>` | Emitted when user hovers over a cell |
 | `gridExpanded` | `EventEmitter<GridDimensions>` | Emitted when grid expands |
+| `gridShrank` | `EventEmitter<GridDimensions>` | Emitted when grid shrinks |
+| `gridResized` | `EventEmitter<GridDimensions>` | Emitted when grid size changes (expand or shrink) |
 | `themeChange` | `EventEmitter<ThemeMode>` | Emitted when theme changes |
 
 #### Public Methods
@@ -212,6 +215,72 @@ The component automatically adapts to different screen sizes:
 - **Desktop (>1024px)** - Full grid, 24px cells
 - **Tablet (576-1024px)** - Optimized spacing
 - **Mobile (<576px)** - Larger touch targets (32px), reduced grid
+
+## 🔄 Dynamic Grid Expansion & Shrinking
+
+When `expandable` is enabled (default: `true`), the grid intelligently adjusts its size based on user interaction:
+
+### Expansion Behavior
+
+- Grid automatically **expands** when hovering near or at the edges
+- Expands up to `maxRows` and `maxCols` limits
+- Grows incrementally to provide smooth user experience
+
+### Shrinking Behavior (New!)
+
+- Grid automatically **shrinks** when hovering away from expanded areas
+- Uses `shrinkThreshold` (default: 2) to prevent jittery behavior
+  - Grid shrinks when hover position is 2+ cells away from the current edge
+- Never shrinks below initial `rows` and `cols` configuration
+- Rows and columns shrink independently based on hover position
+
+### Example
+
+```typescript
+<ngx-table-layout-picker
+  [rows]="10"
+  [cols]="10"
+  [maxRows]="20"
+  [maxCols]="20"
+  [expandable]="true"
+  [shrinkThreshold]="2"
+  (gridExpanded)="onExpand($event)"
+  (gridShrank)="onShrink($event)"
+  (gridResized)="onResize($event)">
+</ngx-table-layout-picker>
+```
+
+```typescript
+export class MyComponent {
+  onExpand(dimensions: GridDimensions): void {
+    console.log(`Grid expanded to ${dimensions.rows} × ${dimensions.cols}`);
+  }
+  
+  onShrink(dimensions: GridDimensions): void {
+    console.log(`Grid shrank to ${dimensions.rows} × ${dimensions.cols}`);
+  }
+  
+  onResize(dimensions: GridDimensions): void {
+    console.log(`Grid resized to ${dimensions.rows} × ${dimensions.cols}`);
+  }
+}
+```
+
+### Adjusting Shrink Threshold
+
+The `shrinkThreshold` controls how responsive the shrinking behavior is:
+
+- **Lower values (1)** - More responsive, but may feel jittery
+- **Default (2)** - Balanced behavior for most use cases  
+- **Higher values (3-4)** - Less responsive, smoother experience
+
+```typescript
+// Very responsive shrinking
+<ngx-table-layout-picker [shrinkThreshold]="1">
+
+// More conservative shrinking
+<ngx-table-layout-picker [shrinkThreshold]="3">
+```
 
 ## 🔧 Configuration Examples
 

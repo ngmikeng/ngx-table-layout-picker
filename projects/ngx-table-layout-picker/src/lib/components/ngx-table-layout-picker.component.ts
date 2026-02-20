@@ -66,11 +66,14 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
   @Input() responsive = true;
   @Input() ariaLabel = 'Table layout selector';
   @Input() minCellSize = 20;
+  @Input() shrinkThreshold = 2;
 
   // Output events
   @Output() selectionChange = new EventEmitter<TableSelection>();
   @Output() cellHover = new EventEmitter<TableCell>();
   @Output() gridExpanded = new EventEmitter<GridDimensions>();
+  @Output() gridShrank = new EventEmitter<GridDimensions>();
+  @Output() gridResized = new EventEmitter<GridDimensions>();
   @Output() themeChange = new EventEmitter<ThemeMode>();
 
   // Signals for reactive state
@@ -235,25 +238,31 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
     this.hoveredCell.set(cell);
     this.cellHover.emit(cell);
 
-    // Handle grid expansion if enabled
+    // Handle grid expansion/shrinking if enabled
     if (this.expandable) {
-      const expansion = this.layoutService.shouldExpandGrid(
-        this.currentDimensions(),
+      const currentDims = this.currentDimensions();
+      const optimalDimensions = this.layoutService.calculateOptimalDimensions(
+        currentDims,
         cell,
-        { rows: this.maxRows, cols: this.maxCols }
+        { rows: this.rows, cols: this.cols },
+        { rows: this.maxRows, cols: this.maxCols },
+        this.shrinkThreshold
       );
 
-      if (expansion.expandRows || expansion.expandCols) {
-        const newDimensions = {
-          rows: expansion.expandRows
-            ? this.currentDimensions().rows + 1
-            : this.currentDimensions().rows,
-          cols: expansion.expandCols
-            ? this.currentDimensions().cols + 1
-            : this.currentDimensions().cols
-        };
-        this.currentDimensions.set(newDimensions);
-        this.gridExpanded.emit(newDimensions);
+      // Check if dimensions changed
+      if (optimalDimensions.rows !== currentDims.rows || optimalDimensions.cols !== currentDims.cols) {
+        const expanded = optimalDimensions.rows > currentDims.rows || optimalDimensions.cols > currentDims.cols;
+        const shrank = optimalDimensions.rows < currentDims.rows || optimalDimensions.cols < currentDims.cols;
+        
+        this.currentDimensions.set(optimalDimensions);
+        this.gridResized.emit(optimalDimensions);
+        
+        if (expanded) {
+          this.gridExpanded.emit(optimalDimensions);
+        }
+        if (shrank) {
+          this.gridShrank.emit(optimalDimensions);
+        }
       }
     }
   }

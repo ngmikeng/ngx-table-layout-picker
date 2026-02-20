@@ -89,4 +89,95 @@ describe('NgxTableLayoutPickerComponent', () => {
     expect(element.getAttribute('role')).toBe('grid');
     expect(element.getAttribute('aria-label')).toBe('Table layout selector');
   });
+
+  describe('expandable grid behavior', () => {
+    beforeEach(() => {
+      component.expandable = true;
+      fixture.detectChanges();
+    });
+
+    it('should expand grid when hovering at edges', () => {
+      vi.spyOn(component.gridExpanded, 'emit');
+      vi.spyOn(component.gridResized, 'emit');
+      
+      component['onCellHover'](10, 10);
+      
+      expect(component['currentDimensions']().rows).toBe(11);
+      expect(component['currentDimensions']().cols).toBe(11);
+      expect(component.gridExpanded.emit).toHaveBeenCalledWith({ rows: 11, cols: 11 });
+      expect(component.gridResized.emit).toHaveBeenCalledWith({ rows: 11, cols: 11 });
+    });
+
+    it('should shrink grid when hovering away from edges', () => {
+      // First expand the grid
+      component['currentDimensions'].set({ rows: 15, cols: 15 });
+      
+      vi.spyOn(component.gridShrank, 'emit');
+      vi.spyOn(component.gridResized, 'emit');
+      
+      // Hover far from edge (with shrinkThreshold=2, hovering at 8 should shrink)
+      component['onCellHover'](8, 8);
+      
+      expect(component['currentDimensions']().rows).toBe(10); // shrink to min
+      expect(component['currentDimensions']().cols).toBe(10);
+      expect(component.gridShrank.emit).toHaveBeenCalledWith({ rows: 10, cols: 10 });
+      expect(component.gridResized.emit).toHaveBeenCalledWith({ rows: 10, cols: 10 });
+    });
+
+    it('should not shrink below initial dimensions', () => {
+      component['onCellHover'](3, 3);
+      
+      expect(component['currentDimensions']().rows).toBe(10);
+      expect(component['currentDimensions']().cols).toBe(10);
+    });
+
+    it('should not expand beyond maxRows and maxCols', () => {
+      component.maxRows = 12;
+      component.maxCols = 12;
+      component['currentDimensions'].set({ rows: 12, cols: 12 });
+      
+      component['onCellHover'](13, 13);
+      
+      expect(component['currentDimensions']().rows).toBe(12);
+      expect(component['currentDimensions']().cols).toBe(12);
+    });
+
+    it('should respect shrinkThreshold', () => {
+      component.shrinkThreshold = 3;
+      component['currentDimensions'].set({ rows: 15, cols: 15 });
+      
+      // With threshold=3, hovering at 12, maxNeeded = 12+3 = 15, no shrink
+      component['onCellHover'](12, 12);
+      expect(component['currentDimensions']().rows).toBe(15);
+      
+      // With threshold=3, hovering at 11, maxNeeded = 11+3 = 14, should shrink to 12
+      component['onCellHover'](11, 11);
+      expect(component['currentDimensions']().rows).toBe(12);
+    });
+
+    it('should not affect grid when expandable is false', () => {
+      component.expandable = false;
+      component['currentDimensions'].set({ rows: 10, cols: 10 });
+      
+      vi.spyOn(component.gridExpanded, 'emit');
+      vi.spyOn(component.gridShrank, 'emit');
+      
+      component['onCellHover'](10, 10);
+      
+      expect(component['currentDimensions']().rows).toBe(10);
+      expect(component['currentDimensions']().cols).toBe(10);
+      expect(component.gridExpanded.emit).not.toHaveBeenCalled();
+      expect(component.gridShrank.emit).not.toHaveBeenCalled();
+    });
+
+    it('should handle rows and cols independently', () => {
+      component['currentDimensions'].set({ rows: 15, cols: 10 });
+      
+      // Hover should shrink rows and expand cols
+      component['onCellHover'](8, 10);
+      
+      expect(component['currentDimensions']().rows).toBe(10); // shrunk
+      expect(component['currentDimensions']().cols).toBe(11); // expanded
+    });
+  });
 });

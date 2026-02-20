@@ -55,6 +55,57 @@ export class TableLayoutService {
   }
 
   /**
+   * Calculate optimal grid dimensions based on hover position
+   * Supports both expansion and shrinking with a threshold to prevent jitter
+   * @param currentDimensions - Current grid dimensions
+   * @param hoverPosition - Position where user is hovering
+   * @param minDimensions - Minimum allowed dimensions (initial configuration)
+   * @param maxDimensions - Maximum allowed dimensions
+   * @param shrinkThreshold - How many cells away from edge before shrinking (default: 2)
+   * @returns Optimal dimensions for the grid
+   */
+  calculateOptimalDimensions(
+    currentDimensions: GridDimensions,
+    hoverPosition: TableCell,
+    minDimensions: GridDimensions,
+    maxDimensions: GridDimensions,
+    shrinkThreshold: number = 2
+  ): GridDimensions {
+    let optimalRows = currentDimensions.rows;
+    let optimalCols = currentDimensions.cols;
+
+    // Expansion logic - expand when hovering at or beyond current edges
+    if (hoverPosition.row >= currentDimensions.rows && currentDimensions.rows < maxDimensions.rows) {
+      optimalRows = Math.min(hoverPosition.row + 1, maxDimensions.rows);
+    }
+    if (hoverPosition.col >= currentDimensions.cols && currentDimensions.cols < maxDimensions.cols) {
+      optimalCols = Math.min(hoverPosition.col + 1, maxDimensions.cols);
+    }
+
+    // Shrink logic - shrink when hovering far enough from edges
+    // Only shrink if we're currently expanded beyond minimum
+    if (currentDimensions.rows > minDimensions.rows) {
+      // Check if hover position suggests we can shrink rows
+      const maxNeededRows = hoverPosition.row + shrinkThreshold;
+      if (maxNeededRows < currentDimensions.rows) {
+        // Shrink to the maximum of (minRows, hover + threshold)
+        optimalRows = Math.max(minDimensions.rows, hoverPosition.row + 1);
+      }
+    }
+
+    if (currentDimensions.cols > minDimensions.cols) {
+      // Check if hover position suggests we can shrink cols
+      const maxNeededCols = hoverPosition.col + shrinkThreshold;
+      if (maxNeededCols < currentDimensions.cols) {
+        // Shrink to the maximum of (minCols, hover + threshold)
+        optimalCols = Math.max(minDimensions.cols, hoverPosition.col + 1);
+      }
+    }
+
+    return { rows: optimalRows, cols: optimalCols };
+  }
+
+  /**
    * Calculate responsive cell size based on container dimensions
    * Ensures cell size stays within min/max bounds
    */

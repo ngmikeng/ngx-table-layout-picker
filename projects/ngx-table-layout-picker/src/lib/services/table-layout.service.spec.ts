@@ -70,4 +70,92 @@ describe('TableLayoutService', () => {
     expect(service.getCellAriaLabel(1, 1)).toBe('1 row by 1 column');
     expect(service.getCellAriaLabel(5, 7)).toBe('5 rows by 7 columns');
   });
+
+  describe('calculateOptimalDimensions', () => {
+    it('should expand when hovering at edges', () => {
+      const result = service.calculateOptimalDimensions(
+        { rows: 10, cols: 10 },
+        { row: 10, col: 10 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result.rows).toBe(11);
+      expect(result.cols).toBe(11);
+    });
+
+    it('should expand to maxDimensions but not beyond', () => {
+      const result = service.calculateOptimalDimensions(
+        { rows: 19, cols: 19 },
+        { row: 20, col: 20 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result.rows).toBe(20);
+      expect(result.cols).toBe(20);
+    });
+
+    it('should shrink when hovering far from edges', () => {
+      const result = service.calculateOptimalDimensions(
+        { rows: 15, cols: 15 },
+        { row: 8, col: 8 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result.rows).toBe(10); // shrinks to max of (minRows=10, hover+1=9)
+      expect(result.cols).toBe(10);
+    });
+
+    it('should not shrink below minDimensions', () => {
+      const result = service.calculateOptimalDimensions(
+        { rows: 10, cols: 10 },
+        { row: 3, col: 3 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result.rows).toBe(10); // should not go below minRows
+      expect(result.cols).toBe(10); // should not go below minCols
+    });
+
+    it('should respect shrinkThreshold', () => {
+      // With threshold=2, hovering at row 13 in a 15-row grid
+      // maxNeeded = 13 + 2 = 15, so no shrink
+      const result1 = service.calculateOptimalDimensions(
+        { rows: 15, cols: 15 },
+        { row: 13, col: 13 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result1.rows).toBe(15); // no shrink
+      expect(result1.cols).toBe(15); // no shrink
+
+      // With threshold=2, hovering at row 12 in a 15-row grid
+      // maxNeeded = 12 + 2 = 14, so shrink to 13
+      const result2 = service.calculateOptimalDimensions(
+        { rows: 15, cols: 15 },
+        { row: 12, col: 12 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result2.rows).toBe(13); // shrink to hover + 1
+      expect(result2.cols).toBe(13);
+    });
+
+    it('should handle expansion and shrinking independently for rows and cols', () => {
+      const result = service.calculateOptimalDimensions(
+        { rows: 15, cols: 10 },
+        { row: 8, col: 10 },
+        { rows: 10, cols: 10 },
+        { rows: 20, cols: 20 },
+        2
+      );
+      expect(result.rows).toBe(10); // shrink rows
+      expect(result.cols).toBe(11); // expand cols
+    });
+  });
 });
