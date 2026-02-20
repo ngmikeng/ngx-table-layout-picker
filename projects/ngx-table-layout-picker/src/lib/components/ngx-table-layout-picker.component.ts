@@ -9,12 +9,16 @@ import {
   effect,
   OnInit,
   OnDestroy,
-  inject
+  inject,
+  ElementRef,
+  AfterViewInit
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableCellComponent } from './table-cell/table-cell.component';
 import { TableFooterComponent } from './table-footer/table-footer.component';
 import { TableLayoutService } from '../services/table-layout.service';
+import { ResponsiveService } from '../services/responsive.service';
+import { ThemeService } from '../services/theme.service';
 import { TableCell } from '../models/table-cell.model';
 import { TableSelection } from '../models/table-selection.model';
 import { GridDimensions } from '../models/grid-dimensions.model';
@@ -34,13 +38,21 @@ import { ThemeMode } from '../models/theme.model';
   host: {
     '[attr.data-theme]': 'effectiveTheme()',
     '[class.tls-responsive]': 'responsive',
+    '[class.tls-mobile]': 'responsiveService.isMobile()',
+    '[class.tls-tablet]': 'responsiveService.isTablet()',
+    '[class.tls-desktop]': 'responsiveService.isDesktop()',
     'role': 'grid',
     '[attr.aria-label]': 'ariaLabel'
   }
 })
-export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy {
+export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly layoutService = inject(TableLayoutService);
+  protected readonly responsiveService = inject(ResponsiveService);
+  private readonly themeService = inject(ThemeService);
+  private readonly elementRef = inject(ElementRef);
   private mediaQuery?: MediaQueryList;
+  private resizeObserver?: ResizeObserver;
+  private containerWidth = signal<number>(0);
 
   // Input properties
   @Input() rows = 10;
@@ -77,12 +89,62 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy {
     return this.theme;
   });
 
+  // Responsive computed properties
+  protected readonly responsiveRows = computed(() => {
+    if (!this.responsive) return this.currentDimensions().rows;
+    
+    const breakpoint = this.responsiveService.currentBreakpoint();
+    const recommended = this.responsiveService.getRecommendedGridSize();
+    
+    // Use recommended size if initial dimensions haven't been expanded
+    if (this.currentDimensions().rows === this.rows) {
+      return Math.min(recommended.rows, this.rows);
+    }
+    
+    return this.currentDimensions().rows;
+  });
+  
+  protected readonly responsiveCols = computed(() => {
+    if (!this.responsive) return this.currentDimensions().cols;
+    
+    const breakpoint = this.responsiveService.currentBreakpoint();
+    const recommended = this.responsiveService.getRecommendedGridSize();
+    
+    // Use recommended size if initial dimensions haven't been expanded
+    if (this.currentDimensions().cols === this.cols) {
+      return Math.min(recommended.cols, this.cols);
+    }
+    
+    return this.currentDimensions().cols;
+  });
+  
+  protected readonly responsiveCellSize = computed(() => {
+    if (!this.responsive) return this.cellSize;
+    
+    const containerW = this.containerWidth();
+    if (containerW === 0) {
+      return this.responsiveService.getRecommendedCellSize();
+    }
+    
+    const cols = this.responsiveCols();
+    const minSize = this.responsiveService.isMobile() 
+      ? this.responsiveService.getMinTouchTargetSize() 
+      : this.minCellSize;
+    
+    return this.responsiveService.calculateCellSize(
+      containerW,
+      cols,
+      minSize,
+      this.cellSize
+    );
+  });
+
   protected readonly rowsArray = computed(() =>
-    this.layoutService.generateRange(this.currentDimensions().rows)
+    this.layoutService.generateRange(this.responsive ? this.responsiveRows() : this.currentDimensions().rows)
   );
 
   protected readonly colsArray = computed(() =>
-    this.layoutService.generateRange(this.currentDimensions().cols)
+    this.layoutService.generateRange(this.responsive ? this.responsiveCols() : this.currentDimensions().cols)
   );
 
   protected readonly selectionText = computed(() => {
@@ -128,10 +190,32 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy {
       this.mediaQuery.addEventListener('change', this.onThemeMediaChange);
     }
   }
+  
+  ngAfterViewInit(): void {
+    // Set up resize observer for responsive behavior
+    if (this.responsive && typeof window !== 'undefined' && 'ResizeObserver' in window) {
+      this.resizeObserver = new ResizeObserver(
+        this.responsiveService.debounce((entries) => {
+          for (const entry of entries) {
+            const width = entry.contentRect.width;
+            this.containerWidth.set(width);
+          }
+        }, 150)
+      );
+      
+      const container = this.elementRef.nativeElement.querySelector('.tls-container');
+      if (container) {
+        this.resizeObserver.observe(container);
+      }
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.mediaQuery) {
       this.mediaQuery.removeEventListener('change', this.onThemeMediaChange);
+    }
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
     }
   }
 

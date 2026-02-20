@@ -15,3 +15,11 @@ export * from './lib/models/table-layout-config.model';
 
 // Services
 export * from './lib/services/table-layout.service';
+export * from './lib/services/theme.service';
+export * from './lib/services/responsive.service';
+
+// Constants
+export * from './lib/constants/responsive.constants';
+
+// Utilities
+export * from './lib/utils/touch-handler';

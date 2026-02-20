@@ -1,8 +1,15 @@
+@import '../../themes/responsive-mixins';
+
 :host {
   display: block;
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  
+  // Ensure minimum touch target size
+  min-width: 20px;
+  min-height: 20px;
 
   &:focus {
     outline: 2px solid var(--tls-focus-color, #1976d2);
@@ -33,10 +40,22 @@
 }
 
 // Touch device optimization
-@media (hover: none) {
-  .tls-cell {
+@include touch-device {
+  :host {
     // Larger touch targets on mobile
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .tls-cell {
+    // Prevent text selection during touch
+    -webkit-touch-callout: none;
+  }
+}
+
+// Reduced motion
+@include reduced-motion {
+  .tls-cell {
+    transition: none !important;
   }
 }

@@ -1,3 +1,5 @@
+@import '../themes/responsive-mixins';
+
 :host {
   display: block;
   
@@ -14,6 +16,12 @@
   --tls-border-hover: #1976d2;
   --tls-cell-active: #1565c0;
   --tls-focus-color: #1976d2;
+  
+  // Safe area insets for iOS notch/home indicator
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
 }
 
 // Light theme
@@ -72,13 +80,75 @@
 
 // Responsive mode
 :host(.tls-responsive) {
-  @media (max-width: 576px) {
+  // Mobile styles
+  &.tls-mobile {
     --tls-cell-size: 32px;
-    --tls-gap: 3px;
+    --tls-gap: 4px;
+    --tls-padding: 12px;
+    
+    .tls-container {
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
+  
+  // Tablet styles
+  &.tls-tablet {
+ 
 
-  @media (max-width: 400px) {
-    --tls-cell-size: 28px;
+@include reduced-motion {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+// High DPI displays
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .tls-container {
+    --tls-border-width: 1.5px;
+  }
+}   --tls-cell-size: 28px;
+    --tls-gap: 3px;
+    --tls-padding: 10px;
+    
+    .tls-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+  
+  // Desktop styles
+  &.tls-desktop {
+    --tls-cell-size: 24px;
+    --tls-gap: 2px;
+    --tls-padding: 8px;
+    
+    .tls-container {
+      max-width: 500px;
+    }
+  }
+}
+
+// Touch device optimizations
+@include touch-device {
+  .tls-container {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+// Landscape orientation adjustments
+@include landscape {
+  @include mobile {
+    :host(.tls-responsive) {
+      .tls-container {
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+    }
   }
 }
 
