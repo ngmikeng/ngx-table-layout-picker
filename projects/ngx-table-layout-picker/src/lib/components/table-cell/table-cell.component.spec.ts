@@ -37,6 +37,11 @@ describe('TableCellComponent', () => {
   });
 
   describe('Touch Interactions', () => {
+    beforeEach(() => {
+      // Mock document.elementFromPoint for touch handler
+      document.elementFromPoint = vi.fn().mockReturnValue(fixture.nativeElement);
+    });
+    
     it('should handle touch start', () => {
       vi.spyOn(component.cellHover, 'emit');
       const touchEvent = new TouchEvent('touchstart', {
@@ -87,23 +92,23 @@ describe('TableCellComponent', () => {
 
   describe('Visual States', () => {
     it('should apply active class when active', () => {
-      component.active = true;
+      fixture.componentRef.setInput('active', true);
       fixture.detectChanges();
       const element = fixture.nativeElement as HTMLElement;
       expect(element.classList.contains('active')).toBe(true);
     });
 
     it('should apply hovered class when hovered', () => {
-      component.hovered = true;
+      fixture.componentRef.setInput('hovered', true);
       fixture.detectChanges();
       const element = fixture.nativeElement as HTMLElement;
       expect(element.classList.contains('hovered')).toBe(true);
     });
 
     it('should remove active class when not active', () => {
-      component.active = true;
+      fixture.componentRef.setInput('active', true);
       fixture.detectChanges();
-      component.active = false;
+      fixture.componentRef.setInput('active', false);
       fixture.detectChanges();
       const element = fixture.nativeElement as HTMLElement;
       expect(element.classList.contains('active')).toBe(false);

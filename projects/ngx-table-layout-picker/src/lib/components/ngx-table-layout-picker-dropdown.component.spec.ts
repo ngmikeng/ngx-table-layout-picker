@@ -48,7 +48,7 @@ describe('NgxTableLayoutPickerDropdownComponent', () => {
 
   describe('Button Rendering', () => {
     it('should render button with custom label', () => {
-      component.buttonLabel = 'Create Table';
+      fixture.componentRef.setInput('buttonLabel', 'Create Table');
       fixture.detectChanges();
       const button = fixture.nativeElement.querySelector('button');
       expect(button?.textContent).toContain('Create Table');
@@ -61,7 +61,7 @@ describe('NgxTableLayoutPickerDropdownComponent', () => {
     });
 
     it('should disable button when disabled is true', () => {
-      component.disabled = true;
+      fixture.componentRef.setInput('disabled', true);
       fixture.detectChanges();
       const button = fixture.nativeElement.querySelector('button');
       expect(button?.disabled).toBe(true);

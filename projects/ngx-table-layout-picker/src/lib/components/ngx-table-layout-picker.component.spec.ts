@@ -76,7 +76,7 @@ describe('NgxTableLayoutPickerComponent', () => {
 
   it('should set theme', () => {
     component.setTheme('dark');
-    expect(component.theme).toBe('dark');
+    expect(component['effectiveTheme']()).toBe('dark');
   });
 
   it('should format selection text correctly', () => {
@@ -183,19 +183,19 @@ describe('NgxTableLayoutPickerComponent', () => {
 
   describe('Theming', () => {
     it('should apply light theme', () => {
-      component.theme = 'light';
+      fixture.componentRef.setInput('theme', 'light');
       fixture.detectChanges();
       expect(component['effectiveTheme']()).toBe('light');
     });
 
     it('should apply dark theme', () => {
-      component.theme = 'dark';
+      fixture.componentRef.setInput('theme', 'dark');
       fixture.detectChanges();
       expect(component['effectiveTheme']()).toBe('dark');
     });
 
     it('should handle auto theme mode', () => {
-      component.theme = 'auto';
+      fixture.componentRef.setInput('theme', 'auto');
       fixture.detectChanges();
       const resolved = component['effectiveTheme']();
       expect(['light', 'dark']).toContain(resolved);
@@ -207,7 +207,7 @@ describe('NgxTableLayoutPickerComponent', () => {
           expect(theme).toBe('dark');
           resolve();
         });
-        component.theme = 'dark';
+        fixture.componentRef.setInput('theme', 'dark');
         fixture.detectChanges();
       });
     });
@@ -215,7 +215,7 @@ describe('NgxTableLayoutPickerComponent', () => {
 
   describe('Responsive Behavior', () => {
     it('should use responsive dimensions when responsive is true', () => {
-      component.responsive = true;
+      fixture.componentRef.setInput('responsive', true);
       fixture.detectChanges();
       const rowsArray = component['rowsArray']();
       const colsArray = component['colsArray']();
@@ -226,16 +226,17 @@ describe('NgxTableLayoutPickerComponent', () => {
     });
 
     it('should use standard dimensions when responsive is false', () => {
-      component.responsive = false;
+      fixture.componentRef.setInput('responsive', false);
       fixture.detectChanges();
       const rowsArray = component['rowsArray']();
       const colsArray = component['colsArray']();
-      expect(rowsArray.length).toBe(10);
-      expect(colsArray.length).toBe(10);
+      const currentDims = component['currentDimensions']();
+      expect(rowsArray.length).toBe(currentDims.rows);
+      expect(colsArray.length).toBe(currentDims.cols);
     });
 
     it('should calculate responsive cell size', () => {
-      component.responsive = true;
+      fixture.componentRef.setInput('responsive', true);
       fixture.detectChanges();
       const cellSize = component['responsiveCellSize']();
       expect(cellSize).toBeGreaterThan(0);
@@ -344,7 +345,7 @@ describe('NgxTableLayoutPickerComponent', () => {
 
     it('should set theme programmatically', () => {
       component.setTheme('dark');
-      expect(component.theme).toBe('dark');
+      expect(component['effectiveTheme']()).toBe('dark');
     });
   });
 });

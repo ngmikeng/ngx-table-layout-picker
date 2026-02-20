@@ -16,8 +16,8 @@ describe('TableLayoutService', () => {
   it('should calculate active cells correctly', () => {
     const cells = service.calculateActiveCells(2, 3);
     expect(cells.length).toBe(6); // 2 rows × 3 cols = 6 cells
-    expect(cells).toContain({ row: 1, col: 1 });
-    expect(cells).toContain({ row: 2, col: 3 });
+    expect(cells).toContainEqual({ row: 1, col: 1 });
+    expect(cells).toContainEqual({ row: 2, col: 3 });
   });
 
   it('should determine if cell is active', () => {

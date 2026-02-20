@@ -49,6 +49,12 @@ export class ThemeService {
    */
   setTheme(mode: ThemeMode): void {
     this._themeMode.set(mode);
+    // Immediately update resolved theme for non-auto modes
+    if (mode !== 'auto') {
+      this._resolvedTheme.set(mode);
+    } else {
+      this._resolvedTheme.set(this._systemPreference());
+    }
     this.applyThemeToDocument();
   }
   

@@ -11,7 +11,8 @@ import {
   OnDestroy,
   inject,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  input
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableCellComponent } from './table-cell/table-cell.component';
@@ -37,7 +38,7 @@ import { ThemeMode } from '../models/theme.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.data-theme]': 'effectiveTheme()',
-    '[class.tls-responsive]': 'responsive',
+    '[class.tls-responsive]': 'responsive()',
     '[class.tls-mobile]': 'responsiveService.isMobile()',
     '[class.tls-tablet]': 'responsiveService.isTablet()',
     '[class.tls-desktop]': 'responsiveService.isDesktop()',
@@ -60,10 +61,10 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
   @Input() maxRows = 20;
   @Input() maxCols = 20;
   @Input() showFooter = true;
-  @Input() theme: ThemeMode = 'auto';
+  themeInput = input<ThemeMode>('auto', { alias: 'theme' });
   @Input() cellSize = 24;
   @Input() expandable = true;
-  @Input() responsive = true;
+  responsive = input<boolean>(true);
   @Input() ariaLabel = 'Table layout selector';
   @Input() minCellSize = 20;
   @Input() shrinkThreshold = 2;
@@ -83,18 +84,20 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
     cols: this.cols
   });
   protected readonly systemTheme = signal<'light' | 'dark'>('light');
+  private readonly _themeOverride = signal<ThemeMode | null>(null);
 
   // Computed values
   protected readonly effectiveTheme = computed(() => {
-    if (this.theme === 'auto') {
+    const theme = this._themeOverride() ?? this.themeInput();
+    if (theme === 'auto') {
       return this.systemTheme();
     }
-    return this.theme;
+    return theme;
   });
 
   // Responsive computed properties
   protected readonly responsiveRows = computed(() => {
-    if (!this.responsive) return this.currentDimensions().rows;
+    if (!this.responsive()) return this.currentDimensions().rows;
     
     const breakpoint = this.responsiveService.currentBreakpoint();
     const recommended = this.responsiveService.getRecommendedGridSize();
@@ -108,7 +111,7 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
   });
   
   protected readonly responsiveCols = computed(() => {
-    if (!this.responsive) return this.currentDimensions().cols;
+    if (!this.responsive()) return this.currentDimensions().cols;
     
     const breakpoint = this.responsiveService.currentBreakpoint();
     const recommended = this.responsiveService.getRecommendedGridSize();
@@ -122,7 +125,7 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
   });
   
   protected readonly responsiveCellSize = computed(() => {
-    if (!this.responsive) return this.cellSize;
+    if (!this.responsive()) return this.cellSize;
     
     const containerW = this.containerWidth();
     if (containerW === 0) {
@@ -143,11 +146,11 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
   });
 
   protected readonly rowsArray = computed(() =>
-    this.layoutService.generateRange(this.responsive ? this.responsiveRows() : this.currentDimensions().rows)
+    this.layoutService.generateRange(this.responsive() ? this.responsiveRows() : this.currentDimensions().rows)
   );
 
   protected readonly colsArray = computed(() =>
-    this.layoutService.generateRange(this.responsive ? this.responsiveCols() : this.currentDimensions().cols)
+    this.layoutService.generateRange(this.responsive() ? this.responsiveCols() : this.currentDimensions().cols)
   );
 
   protected readonly selectionText = computed(() => {
@@ -196,7 +199,7 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
   
   ngAfterViewInit(): void {
     // Set up resize observer for responsive behavior
-    if (this.responsive && typeof window !== 'undefined' && 'ResizeObserver' in window) {
+    if (this.responsive() && typeof window !== 'undefined' && 'ResizeObserver' in window) {
       this.resizeObserver = new ResizeObserver(
         this.responsiveService.debounce((entries) => {
           for (const entry of entries) {
@@ -341,6 +344,6 @@ export class NgxTableLayoutPickerComponent implements OnInit, OnDestroy, AfterVi
    * Force theme update
    */
   public setTheme(theme: ThemeMode): void {
-    this.theme = theme;
+    this._themeOverride.set(theme);
   }
 }
