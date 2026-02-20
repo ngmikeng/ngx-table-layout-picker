@@ -158,4 +158,112 @@ describe('TableLayoutService', () => {
       expect(result.cols).toBe(11); // expand cols
     });
   });
+
+  describe('Edge Cases', () => {
+    it('should handle zero or negative cell counts', () => {
+      const cells = service.calculateActiveCells(0, 0);
+      expect(cells.length).toBe(0);
+    });
+
+    it('should handle large grid calculations efficiently', () => {
+      const startTime = Date.now();
+      const cells = service.calculateActiveCells(20, 20);
+      const endTime = Date.now();
+      
+      expect(cells.length).toBe(400);
+      expect(endTime - startTime).toBeLessThan(100); // Should be fast
+    });
+
+    it('should handle null or undefined in isCellActive', () => {
+      expect(service.isCellActive({ row: 1, col: 1 }, null)).toBe(false);
+    });
+
+    it('should validate minimum cell size', () => {
+      const config = service.validateConfig({ cellSize: 10 });
+      expect(config.cellSize).toBeGreaterThanOrEqual(20);
+    });
+
+    it('should validate maximum cell size', () => {
+      const config = service.validateConfig({ cellSize: 100 });
+      expect(config.cellSize).toBeLessThanOrEqual(40);
+    });
+
+    it('should handle responsive cell size with very narrow container', () => {
+      const size = service.calculateResponsiveCellSize(100, 10, 20, 40, 2);
+      expect(size).toBe(20); // Should enforce minimum
+    });
+
+    it('should handle responsive cell size with very wide container', () => {
+      const size = service.calculateResponsiveCellSize(2000, 5, 20, 40, 2);
+      expect(size).toBe(40); // Should enforce maximum
+    });
+  });
+
+  describe('Utility Methods', () => {
+    it('should generate correct range', () => {
+      const range = service.generateRange(5);
+      expect(range).toEqual([1, 2, 3, 4, 5]);
+      expect(range.length).toBe(5);
+    });
+
+    it('should generate empty range for zero', () => {
+      const range = service.generateRange(0);
+      expect(range).toEqual([]);
+    });
+
+    it('should format selection text with multiplication symbol', () => {
+      const text = service.formatSelectionText(5, 7);
+      expect(text).toBe('5 × 7');
+      expect(text).toContain('×');
+    });
+
+    it('should get cell ARIA label with correct pluralization', () => {
+      expect(service.getCellAriaLabel(1, 1)).toBe('1 row by 1 column');
+      expect(service.getCellAriaLabel(1, 2)).toBe('1 row by 2 columns');
+      expect(service.getCellAriaLabel(2, 1)).toBe('2 rows by 1 column');
+      expect(service.getCellAriaLabel(5, 7)).toBe('5 rows by 7 columns');
+    });
+  });
+
+  describe('Configuration Validation', () => {
+    it('should provide all default values', () => {
+      const config = service.validateConfig({});
+      expect(config.rows).toBe(10);
+      expect(config.cols).toBe(10);
+      expect(config.maxRows).toBe(20);
+      expect(config.maxCols).toBe(20);
+      expect(config.showFooter).toBe(true);
+      expect(config.theme).toBe('auto');
+      expect(config.cellSize).toBe(24);
+      expect(config.expandable).toBe(true);
+      expect(config.responsive).toBe(true);
+      expect(config.minCellSize).toBe(20);
+      expect(config.ariaLabel).toBe('Table layout selector');
+    });
+
+    it('should ensure maxRows is at least as large as rows', () => {
+      const config = service.validateConfig({ rows: 15, maxRows: 10 });
+      expect(config.maxRows).toBeGreaterThanOrEqual(config.rows!);
+    });
+
+    it('should ensure maxCols is at least as large as cols', () => {
+      const config = service.validateConfig({ cols: 15, maxCols: 10 });
+      expect(config.maxCols).toBeGreaterThanOrEqual(config.cols!);
+    });
+
+    it('should preserve valid custom values', () => {
+      const config = service.validateConfig({
+        rows: 8,
+        cols: 12,
+        cellSize: 30,
+        showFooter: false,
+        theme: 'dark'
+      });
+      expect(config.rows).toBe(8);
+      expect(config.cols).toBe(12);
+      expect(config.cellSize).toBe(30);
+      expect(config.showFooter).toBe(false);
+      expect(config.theme).toBe('dark');
+    });
+  });
 });

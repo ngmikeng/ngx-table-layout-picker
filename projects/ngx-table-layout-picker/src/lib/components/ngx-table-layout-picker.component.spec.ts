@@ -180,4 +180,171 @@ describe('NgxTableLayoutPickerComponent', () => {
       expect(component['currentDimensions']().cols).toBe(11); // expanded
     });
   });
+
+  describe('Theming', () => {
+    it('should apply light theme', () => {
+      component.theme = 'light';
+      fixture.detectChanges();
+      expect(component['effectiveTheme']()).toBe('light');
+    });
+
+    it('should apply dark theme', () => {
+      component.theme = 'dark';
+      fixture.detectChanges();
+      expect(component['effectiveTheme']()).toBe('dark');
+    });
+
+    it('should handle auto theme mode', () => {
+      component.theme = 'auto';
+      fixture.detectChanges();
+      const resolved = component['effectiveTheme']();
+      expect(['light', 'dark']).toContain(resolved);
+    });
+
+    it('should emit themeChange event', () => {
+      return new Promise<void>((resolve) => {
+        component.themeChange.subscribe((theme) => {
+          expect(theme).toBe('dark');
+          resolve();
+        });
+        component.theme = 'dark';
+        fixture.detectChanges();
+      });
+    });
+  });
+
+  describe('Responsive Behavior', () => {
+    it('should use responsive dimensions when responsive is true', () => {
+      component.responsive = true;
+      fixture.detectChanges();
+      const rowsArray = component['rowsArray']();
+      const colsArray = component['colsArray']();
+      expect(rowsArray).toBeDefined();
+      expect(colsArray).toBeDefined();
+      expect(Array.isArray(rowsArray)).toBe(true);
+      expect(Array.isArray(colsArray)).toBe(true);
+    });
+
+    it('should use standard dimensions when responsive is false', () => {
+      component.responsive = false;
+      fixture.detectChanges();
+      const rowsArray = component['rowsArray']();
+      const colsArray = component['colsArray']();
+      expect(rowsArray.length).toBe(10);
+      expect(colsArray.length).toBe(10);
+    });
+
+    it('should calculate responsive cell size', () => {
+      component.responsive = true;
+      fixture.detectChanges();
+      const cellSize = component['responsiveCellSize']();
+      expect(cellSize).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('should have proper ARIA attributes', () => {
+      const element = fixture.nativeElement as HTMLElement;
+      expect(element.getAttribute('role')).toBe('grid');
+      expect(element.hasAttribute('aria-label')).toBe(true);
+    });
+
+    it('should generate cell ARIA labels', () => {
+      const ariaLabel = component['getCellAriaLabel'](3, 5);
+      expect(ariaLabel).toBeTruthy();
+      expect(ariaLabel).toContain('3');
+      expect(ariaLabel).toContain('5');
+    });
+
+    it('should update screen reader text on hover', () => {
+      component['onCellHover'](4, 6);
+      const screenReader = component['screenReaderText']();
+      expect(screenReader).toBeTruthy();
+      expect(screenReader).toContain('4');
+      expect(screenReader).toContain('6');
+    });
+
+    it('should clear screen reader text on leave', () => {
+      component['onCellHover'](4, 6);
+      component['onContainerLeave']();
+      const screenReader = component['screenReaderText']();
+      expect(screenReader).toBe('');
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle min grid size', () => {
+      component.rows = 1;
+      component.cols = 1;
+      component.ngOnInit();
+      expect(component.rows).toBeGreaterThanOrEqual(3);
+      expect(component.cols).toBeGreaterThanOrEqual(3);
+    });
+
+    it('should handle max grid size', () => {
+      component.rows = 100;
+      component.cols = 100;
+      component.ngOnInit();
+      expect(component.rows).toBeLessThanOrEqual(20);
+      expect(component.cols).toBeLessThanOrEqual(20);
+    });
+
+    it('should handle rapid hover changes', () => {
+      return new Promise<void>((resolve) => {
+        for (let i = 1; i <= 5; i++) {
+          component['onCellHover'](i, i);
+        }
+        
+        setTimeout(() => {
+          const hovered = component['hoveredCell']();
+          expect(hovered).toBeTruthy();
+          expect(hovered?.row).toBe(5);
+          expect(hovered?.col).toBe(5);
+          resolve();
+        }, 50);
+      });
+    });
+
+    it('should handle clicking without prior hover', () => {
+      vi.spyOn(component.selectionChange, 'emit');
+      component['onCellClick'](3, 4);
+      expect(component.selectionChange.emit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          rows: 3,
+          cols: 4
+        })
+      );
+    });
+  });
+
+  describe('Public API Methods', () => {
+    it('should reset grid to initial dimensions', () => {
+      component['currentDimensions'].set({ rows: 15, cols: 15 });
+      component['hoveredCell'].set({ row: 5, col: 5 });
+      
+      component.reset();
+      
+      expect(component['currentDimensions']()).toEqual({ rows: 10, cols: 10 });
+      expect(component['hoveredCell']()).toBeNull();
+    });
+
+    it('should set hovered cell programmatically', () => {
+      vi.spyOn(component.cellHover, 'emit');
+      component.setHoveredCell(3, 4);
+      
+      expect(component['hoveredCell']()).toEqual({ row: 3, col: 4 });
+      expect(component.cellHover.emit).toHaveBeenCalledWith({ row: 3, col: 4 });
+    });
+
+    it('should get current dimensions', () => {
+      component['currentDimensions'].set({ rows: 12, cols: 15 });
+      const dims = component.getDimensions();
+      expect(dims).toEqual({ rows: 12, cols: 15 });
+    });
+
+    it('should set theme programmatically', () => {
+      component.setTheme('dark');
+      expect(component.theme).toBe('dark');
+    });
+  });
 });
