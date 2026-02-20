@@ -1,8 +1,8 @@
 # NGX Table Layout Picker Workspace
 
-[![CI](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/workflows/CI/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/actions)
-[![Deploy](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/actions)
-[![CodeQL](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/workflows/CodeQL/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/actions)
+[![CI](https://github.com/ngmikeng/ngx-table-layout-picker/workflows/CI/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker/actions)
+[![Deploy](https://github.com/ngmikeng/ngx-table-layout-picker/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker/actions)
+[![CodeQL](https://github.com/ngmikeng/ngx-table-layout-picker/workflows/CodeQL/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker/actions)
 
 Angular library workspace for the NGX Table Layout Picker - an intuitive grid-based table dimension selector component.
 
@@ -113,7 +113,7 @@ This project includes a comprehensive CI/CD pipeline using GitHub Actions for au
 ### Demo Application
 
 The demo app is automatically deployed to GitHub Pages:
-- **URL**: `https://ngmikeng.github.io/ngx-table-layout-picker-workspace/`
+- **URL**: `https://ngmikeng.github.io/ngx-table-layout-picker/`
 - **Trigger**: Automatic on push to `main` branch
 - **Manual**: Use workflow dispatch in Actions tab
 

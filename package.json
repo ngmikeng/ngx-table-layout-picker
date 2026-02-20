@@ -1,5 +1,5 @@
 {
-  "name": "ngx-table-layout-picker-workspace",
+  "name": "ngx-table-layout-picker",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

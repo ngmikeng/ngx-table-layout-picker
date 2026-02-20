@@ -36,7 +36,7 @@ jobs:
         run: npm run build
       
       - name: Build demo
-        run: npm run build:demo -- --base-href /ngx-table-layout-picker-workspace/
+        run: npm run build:demo -- --base-href /ngx-table-layout-picker/
         env:
           NODE_ENV: production
       
