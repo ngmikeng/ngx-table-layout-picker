@@ -18,7 +18,7 @@ This workspace contains:
 
 ### Prerequisites
 
-- Node.js 18.x or higher
+- Node.js 20.x or higher
 - npm 10.x or higher
 
 ### Installation
@@ -61,9 +61,95 @@ The NGX Table Layout Picker library provides:
 - ✅ Light, dark, and auto theme detection
 - ✅ Responsive design for all devices
 - ✅ Full accessibility support (ARIA, keyboard navigation)
-- ✅ Angular 17+ standalone components
+- ✅ Angular 20+ standalone components
 - ✅ Signal-based state management
 - ✅ Material Design integration
+
+## 🔌 Quick API Overview
+
+### Components
+
+- **`NgxTableLayoutPickerComponent`** - Main inline table dimension selector
+  - Interactive grid interface with hover and click selection
+  - Configurable dimensions, themes, and responsive behavior
+  - Events: `selectionChange`, `cellHover`, `gridExpanded`, `gridShrank`
+
+- **`NgxTableLayoutPickerDropdownComponent`** - Material Design dropdown wrapper
+  - Button trigger with customizable appearance
+  - Material Menu integration
+  - Pass-through configuration to picker component
+
+### Services
+
+- **`TableLayoutService`** - Core business logic for grid calculations
+- **`ResponsiveService`** - Breakpoint detection and responsive recommendations
+- **`ThemeService`** - Theme management and system preference detection
+
+### Models
+
+- **`TableSelection`** - Selected table dimensions with rows, cols, cells, and timestamp
+- **`TableLayoutConfig`** - Configuration options for the picker
+- **`GridDimensions`** - Simple row/col dimensions
+- **`ThemeMode`** - Theme type: 'light' | 'dark' | 'auto'
+
+For complete API details, see the [API Reference](docs/api-reference.md).
+
+## 🚀 Quick Start Examples
+
+### Basic Inline Usage
+
+```typescript
+import { Component } from '@angular/core';
+import { NgxTableLayoutPickerComponent, TableSelection } from 'ngx-table-layout-picker';
+
+@Component({
+  selector: 'app-editor',
+  standalone: true,
+  imports: [NgxTableLayoutPickerComponent],
+  template: `
+    <ngx-table-layout-picker
+      [rows]="10"
+      [cols]="10"
+      [theme]="'auto'"
+      (selectionChange)="onTableSelected($event)">
+    </ngx-table-layout-picker>
+  `
+})
+export class EditorComponent {
+  onTableSelected(selection: TableSelection): void {
+    console.log(`Selected: ${selection.rows} × ${selection.cols}`);
+    // Insert table with these dimensions
+  }
+}
+```
+
+### Dropdown with Material Design
+
+```typescript
+import { Component } from '@angular/core';
+import { NgxTableLayoutPickerDropdownComponent, TableSelection } from 'ngx-table-layout-picker';
+
+@Component({
+  selector: 'app-toolbar',
+  standalone: true,
+  imports: [NgxTableLayoutPickerDropdownComponent],
+  template: `
+    <ngx-table-layout-picker-dropdown
+      buttonLabel="Insert Table"
+      buttonIcon="table_chart"
+      [selectorConfig]="{ rows: 10, cols: 10, theme: 'auto' }"
+      (tableSelected)="insertTable($event)">
+    </ngx-table-layout-picker-dropdown>
+  `
+})
+export class ToolbarComponent {
+  insertTable(selection: TableSelection): void {
+    // Handle table insertion
+  }
+}
+```
+
+For more examples and patterns, see the [Usage Guide](docs/usage-guide.md).
 
 ## 🔧 Development Workflow
 
@@ -98,13 +184,13 @@ cd dist/ngx-table-layout-picker
 npm publish
 ```
 
-## � CI/CD & Automation
+## CI/CD & Automation
 
 This project includes a comprehensive CI/CD pipeline using GitHub Actions for automated testing, deployment, and releases.
 
 ### Workflows
 
-- **CI** - Continuous integration testing on Node.js 18.x and 20.x
+- **CI** - Continuous integration testing on Node.js 20.x+
 - **Deploy** - Automatic deployment to GitHub Pages on push to `main`
 - **Release** - Semantic versioning and NPM publishing
 - **PR Checks** - Automated validation for pull requests
@@ -144,17 +230,28 @@ For detailed setup instructions including:
 
 See the [CI/CD documentation](.github/README.md).
 
-## �📖 Documentation
+## Documentation
 
-### Quick Links
+### Library Documentation
 
-- [Library README](projects/ngx-table-layout-picker/README.md)
-- [Architecture Documentation](plan/02-architecture.md)
-- [Feature Requirements](plan/03-feature-requirements.md)
-- [Component Design](plan/04-component-design.md)
-- [CI/CD Setup & Documentation](.github/README.md)
-- [CI/CD Deployment Plan](plan/09-cicd-deployment.md)
-- [Implementation Progress](plan/process/implementation-progress.md)
+- 📖 **[API Reference](docs/api-reference.md)** - Complete API documentation for all components, services, and models
+- 📘 **[Usage Guide](docs/usage-guide.md)** - Comprehensive examples and integration patterns
+- 🎨 **[Theming Guide](docs/theming.md)** - Customization and styling documentation
+- 📦 **[Library README](projects/ngx-table-layout-picker/README.md)** - Quick start and overview
+
+### Demo & Live Examples
+
+- 🚀 **[Live Demo](https://ngmikeng.github.io/ngx-table-layout-picker/)** - Interactive demo application
+- 💻 **[Demo Source Code](projects/demo/src)** - Demo application implementation
+
+### Project Documentation
+
+- 🏗️ **[Architecture Documentation](plan/02-architecture.md)** - System architecture and design
+- ✅ **[Feature Requirements](plan/03-feature-requirements.md)** - Feature specifications
+- 🎯 **[Component Design](plan/04-component-design.md)** - Component structure and patterns
+- 🔄 **[CI/CD Setup & Documentation](.github/README.md)** - Automated workflows and deployment
+- 📊 **[CI/CD Deployment Plan](plan/09-cicd-deployment.md)** - Deployment strategy
+- 📈 **[Implementation Progress](plan/process/implementation-progress.md)** - Development timeline
 
 ### Components
 
@@ -201,9 +298,9 @@ npm run lint
 
 ## 🏗️ Workspace Configuration
 
-- **Angular**: 21.1.x
+- **Angular**: 20+ (tested with 21.1.x)
 - **TypeScript**: 5.9.x
-- **Material**: 21.1.x
+- **Material**: 20+ (tested with 21.1.x)
 - **Testing**: Vitest
 - **Build**: ng-packagr
 

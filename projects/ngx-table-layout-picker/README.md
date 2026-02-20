@@ -1,6 +1,6 @@
 # NGX Table Layout Picker
 
-[![Angular](https://img.shields.io/badge/Angular-17+-red.svg)](https://angular.dev)
+[![Angular](https://img.shields.io/badge/Angular-20+-red.svg)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2+-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -14,7 +14,7 @@ An intuitive Angular library for selecting table dimensions through an interacti
 - 🎨 **Theme Support** - Light, dark, and auto-detection themes
 - 📱 **Responsive Design** - Optimized for mobile, tablet, and desktop
 - ♿ **Accessible** - Full keyboard navigation and ARIA support
-- 🔌 **Standalone Components** - Modern Angular 17+ standalone components
+- 🔌 **Standalone Components** - Modern Angular 20+ standalone components
 - ⚡ **Signal-Based** - Reactive state management with Angular signals
 - 🎭 **Material Design** - Optional integration with Angular Material
 - 🎨 **Customizable** - Extensive styling options via CSS custom properties
@@ -80,6 +80,21 @@ export class ToolbarComponent {
   }
 }
 ```
+
+## 📚 Documentation
+
+### Complete Documentation
+
+For comprehensive documentation, see:
+
+- 📖 **[API Reference](../../docs/api-reference.md)** - Complete API documentation for all components, services, and models
+- 📘 **[Usage Guide](../../docs/usage-guide.md)** - Comprehensive examples and integration patterns  
+- 🎨 **[Theming Guide](../../docs/theming.md)** - Customization and styling documentation
+
+### Live Demo
+
+- 🚀 **[Interactive Demo](https://ngmikeng.github.io/ngx-table-layout-picker/)** - Try the component live
+- 💻 **[Demo Source Code](../demo/src)** - View demo implementation
 
 ## 📚 Documentation
 
@@ -359,13 +374,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🐛 Issues
 
-Found a bug? Please [open an issue](https://github.com/your-username/ngx-table-layout-picker/issues).
+Found a bug? Please [open an issue](https://github.com/ngmikeng/ngx-table-layout-picker/issues).
 
 ## 📞 Support
 
-- 📧 Email: support@example.com
-- 💬 Discussions: [GitHub Discussions](https://github.com/your-username/ngx-table-layout-picker/discussions)
-- 📖 Documentation: [Full Documentation](https://your-docs-site.com)
+- � **[Documentation](../../docs/)** - Complete guides and API reference
+- 🚀 **[Live Demo](https://ngmikeng.github.io/ngx-table-layout-picker/)** - Interactive examples
+- 🐛 **[Issues](https://github.com/ngmikeng/ngx-table-layout-picker/issues)** - Report bugs or request features
+- 💬 **[Discussions](https://github.com/ngmikeng/ngx-table-layout-picker/discussions)** - Ask questions and share ideas
 
 ## 🙏 Acknowledgments
 
