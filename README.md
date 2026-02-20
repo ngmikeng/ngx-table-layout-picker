@@ -1,5 +1,9 @@
 # NGX Table Layout Picker Workspace
 
+[![CI](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/workflows/CI/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/actions)
+[![Deploy](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/actions)
+[![CodeQL](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/workflows/CodeQL/badge.svg)](https://github.com/ngmikeng/ngx-table-layout-picker-workspace/actions)
+
 Angular library workspace for the NGX Table Layout Picker - an intuitive grid-based table dimension selector component.
 
 ## 📁 Project Structure
@@ -94,7 +98,53 @@ cd dist/ngx-table-layout-picker
 npm publish
 ```
 
-## 📖 Documentation
+## � CI/CD & Automation
+
+This project includes a comprehensive CI/CD pipeline using GitHub Actions for automated testing, deployment, and releases.
+
+### Workflows
+
+- **CI** - Continuous integration testing on Node.js 18.x and 20.x
+- **Deploy** - Automatic deployment to GitHub Pages on push to `main`
+- **Release** - Semantic versioning and NPM publishing
+- **PR Checks** - Automated validation for pull requests
+- **CodeQL** - Weekly security scanning
+
+### Demo Application
+
+The demo app is automatically deployed to GitHub Pages:
+- **URL**: `https://ngmikeng.github.io/ngx-table-layout-picker-workspace/`
+- **Trigger**: Automatic on push to `main` branch
+- **Manual**: Use workflow dispatch in Actions tab
+
+### Semantic Versioning
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning:
+
+```bash
+# Patch release (1.0.0 → 1.0.1)
+fix(selector): correct cell selection bug
+
+# Minor release (1.0.0 → 1.1.0)
+feat(dropdown): add keyboard navigation
+
+# Major release (1.0.0 → 2.0.0)
+feat(api): redesign component interface
+
+BREAKING CHANGE: removed deprecated cellBorderColor option
+```
+
+### Setup & Configuration
+
+For detailed setup instructions including:
+- Enabling GitHub Pages
+- Configuring NPM publishing
+- Setting up secrets
+- Troubleshooting
+
+See the [CI/CD documentation](.github/README.md).
+
+## �📖 Documentation
 
 ### Quick Links
 
@@ -102,6 +152,8 @@ npm publish
 - [Architecture Documentation](plan/02-architecture.md)
 - [Feature Requirements](plan/03-feature-requirements.md)
 - [Component Design](plan/04-component-design.md)
+- [CI/CD Setup & Documentation](.github/README.md)
+- [CI/CD Deployment Plan](plan/09-cicd-deployment.md)
 - [Implementation Progress](plan/process/implementation-progress.md)
 
 ### Components
@@ -157,11 +209,23 @@ npm run lint
 
 ## 🤝 Contributing
 
-1. Create a feature branch
-2. Make your changes
+1. Create a feature branch from `develop` or `main`
+2. Make your changes following [Conventional Commits](https://www.conventionalcommits.org/)
 3. Write/update tests
 4. Build and test locally
 5. Submit a pull request
+   - PR checks workflow will automatically validate your changes
+   - All tests must pass before merging
+
+### Commit Message Format
+
+```
+<type>(<scope>): <subject>
+```
+
+**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`
+
+See [CI/CD documentation](.github/README.md) for more details.
 
 ## 📄 License
 
@@ -173,14 +237,7 @@ Built with [Angular CLI](https://github.com/angular/angular-cli) and inspired by
 
 ---
 
-Made with ❤️ using Angular
+**Made with ❤️ using Angular**
 
-```bash
-ng e2e
-```
+For more information on Angular CLI commands, visit the [Angular CLI Documentation](https://angular.dev/tools/cli).
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
