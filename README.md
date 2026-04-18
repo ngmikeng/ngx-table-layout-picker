@@ -6,6 +6,8 @@
 
 Angular library workspace for the NGX Table Layout Picker - an intuitive grid-based table dimension selector component.
 
+**[Live Demo](https://ngmikeng.github.io/ngx-table-layout-picker/)**
+
 ## 📁 Project Structure
 
 This workspace contains:
@@ -228,8 +230,6 @@ For detailed setup instructions including:
 - Setting up secrets
 - Troubleshooting
 
-See the [CI/CD documentation](.github/README.md).
-
 ## Documentation
 
 ### Library Documentation
@@ -249,7 +249,6 @@ See the [CI/CD documentation](.github/README.md).
 - 🏗️ **[Architecture Documentation](plan/02-architecture.md)** - System architecture and design
 - ✅ **[Feature Requirements](plan/03-feature-requirements.md)** - Feature specifications
 - 🎯 **[Component Design](plan/04-component-design.md)** - Component structure and patterns
-- 🔄 **[CI/CD Setup & Documentation](.github/README.md)** - Automated workflows and deployment
 - 📊 **[CI/CD Deployment Plan](plan/09-cicd-deployment.md)** - Deployment strategy
 - 📈 **[Implementation Progress](plan/process/implementation-progress.md)** - Development timeline
 
@@ -321,8 +320,6 @@ npm run lint
 ```
 
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`
-
-See [CI/CD documentation](.github/README.md) for more details.
 
 ## 📄 License
 
