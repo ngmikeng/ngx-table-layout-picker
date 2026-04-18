@@ -72,21 +72,23 @@ describe('ResponsiveService', () => {
     expect(dimensions.height).toBeGreaterThan(0);
   });
 
-  it('should create debounced function', (done: any) => {
-    let callCount = 0;
-    const debouncedFn = service.debounce(() => {
-      callCount++;
-    }, 100);
-    
-    debouncedFn();
-    debouncedFn();
-    debouncedFn();
-    
-    expect(callCount).toBe(0);
-    
-    setTimeout(() => {
-      expect(callCount).toBe(1);
-      done();
-    }, 150);
+  it('should create debounced function', () => {
+    return new Promise<void>((resolve) => {
+      let callCount = 0;
+      const debouncedFn = service.debounce(() => {
+        callCount++;
+      }, 100);
+
+      debouncedFn();
+      debouncedFn();
+      debouncedFn();
+
+      expect(callCount).toBe(0);
+
+      setTimeout(() => {
+        expect(callCount).toBe(1);
+        resolve();
+      }, 150);
+    });
   });
 });
