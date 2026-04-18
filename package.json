@@ -21,6 +21,10 @@
       }
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npm/cli.git"
+  },
   "packageManager": "npm@10.9.3",
   "dependencies": {
     "@angular/animations": "^21.2.0",
